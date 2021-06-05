@@ -41,11 +41,17 @@ function App() {
   }, [])
 
   useEffect(() => {
-    let currentTodo = currentId !== 0 ? todos.find(todo => todo._id === currentId) : { title: '', content: '' }
+    let currentTodo = currentId !== 0 ? todos.find(todo => todo._id === currentId) : { title: '', content: '' };
 
     setTodo(currentTodo);
+    if (currentTodo !== undefined && currentTodo.title !== '') {
+      document.getElementById('todo-title').dispatchEvent(new Event('change',  { bubbles: true }));
+      document.getElementById('todo-description').dispatchEvent(new Event('change',  { bubbles: true }));
+    }
+
   }, [currentId]);
 
+  // Called on page load to fetch the data from api. Also when id of the todo item changes.
   useEffect(() => {
     const fetchData = async () => {
       const result = await readTodos();
@@ -55,6 +61,8 @@ function App() {
     fetchData()
   }, [currentId])
 
+
+  // On click of the submit handler.
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -74,26 +82,26 @@ function App() {
   }
   return (
 
-    <div className="container">
+    <div className="container-fuild">
       <nav className="center-align">
         <div className="nav-wrapper">
-          <a href="#" className="brand-logo">Todo List</a>
+          <a href="/" className="brand-logo">Todo List</a>
         </div>
       </nav>
 
-      <div className="row">
+      <div className="row container">
         {/* <pre>{JSON.stringify(todo)}</pre> */}
         <form className="col s12" onSubmit={onSubmitHandler}>
           <div className="row">
             <div className="input-field col s6">
               <i className="material-icons prefix">title</i>
-              <input id="icon_prefix" required type="text" className="validate" onChange={e => setTodo({ ...todo, title: e.target.value })} value={todo.title} />
-              <label htmlFor="icon_prefix">Title</label>
+              <input id="todo-title" required type="text" className="validate" onChange={e => setTodo({ ...todo, title: e.target.value })} value={todo.title} />
+              <label htmlFor="todo-title">Title</label>
             </div>
             <div className="input-field col s6">
               <i className="material-icons prefix">description</i>
-              <input id="description" type="text" className="validate" onChange={e => setTodo({ ...todo, content: e.target.value })} value={todo.content} />
-              <label htmlFor="description">Content</label>
+              <input id="todo-description" type="text" className="validate" onChange={e => setTodo({ ...todo, content: e.target.value })} value={todo.content} />
+              <label htmlFor="todo-description">Content</label>
             </div>
           </div>
           <div className="row right-align">
